@@ -22,7 +22,7 @@ pipeline {
 					docker.image("openjdk:8-alpine").inside() {
 							
 							stage("IInit Mysql") {
-							  sh "echo *********************************************************************"
+							  sh 'echo "Tests passed"'
 							}
 							
 						}
