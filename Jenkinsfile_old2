@@ -22,9 +22,17 @@ pipeline {
 					docker.image("openjdk:8-alpine").inside() {
 							
 							stage("IInit Mysql") {
-							  sh "echo *********************************************************************"
+							  sh "docker container run -d --name mysql -e MYSQL_DATABASE=notepad -e MYSQL_ROOT_PASSWORD=root -p 3306:3306 mysql:5.7"
 							}
 							
+							stage("run tests") {
+							  sh "mvn clean verify"
+							}
+							
+							stage ("stop mysql") {
+								sh "docker stop mysql && docker rm mysql"
+							}
+					
 						}
 				}
             }
