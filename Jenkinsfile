@@ -4,6 +4,10 @@ pipeline {
     }
   agent any
   
+  tools {
+    maven 'M3'
+  }
+  
   stages {
 		stage ('Docker') {
 		  steps {
@@ -19,7 +23,7 @@ pipeline {
 		
         stage("Build") {
             steps {
-				 sh 'mvn clean install -DskipTests'
+				 sh 'mvn -B -DskipTests clean package'
             }
         }		
 		stage("Test") {
