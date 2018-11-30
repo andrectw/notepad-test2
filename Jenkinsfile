@@ -5,6 +5,12 @@ pipeline {
   agent any
   
   stages {
+		stage ('Docker') {
+		  steps {
+			sh 'docker version'
+		  }
+		}
+  
 		stage('checkout') {
 			steps {
 				git 'https://github.com/andrectw/notepad-test1.git'
