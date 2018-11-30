@@ -16,17 +16,19 @@ pipeline {
 				git 'https://github.com/andrectw/notepad-test1.git'
 			}
 		}
+		
         stage("Build") {
             steps {
-				script {
-					docker.image("openjdk:8-alpine").inside() {
-							
-							stage("IInit Mysql") {
-							  sh 'echo "Tests passed"'
-							}
-							
-						}
-				}
+				 sh 'mvn clean install -DskipTests'
+            }
+        }		
+		stage("Test") {
+            steps {
+				 sh "docker container run -d --name mysql -e MYSQL_DATABASE=notepad -e MYSQL_ROOT_PASSWORD=root -p 3306:3306 mysql:5.7"
+		
+				sh "mvn clean verify"
+		
+				sh "docker stop mysql && docker rm mysql"
             }
         }
     }
