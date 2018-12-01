@@ -1,3 +1,6 @@
+
+def dockerMysqlIP = 'UNKNOWN'
+
 pipeline {
     environment {
       DOCKER = credentials('docker-hub')
@@ -8,8 +11,6 @@ pipeline {
     maven 'M3'
   }
   
-  def dockerMysqlIP
-  
   stages {
 		stage ('Docker') {
 		  steps {
@@ -19,7 +20,7 @@ pipeline {
   
 		stage('checkout') {
 			steps {
-				git 'https://github.com/andrectw/notepad-test1.git'
+				git 'https://github.com/andrectw/notepad-test2.git'
 			}
 		}
 		
@@ -29,12 +30,17 @@ pipeline {
             }
         }		
 		stage("Test") {
+		
             steps {
 				
-				dockerMysqlIP = sh (
-					script: 'docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" mysql',
-					returnStdout: true
-				)
+				step {
+					script {
+						dockerMysqlIP = sh (
+							script: 'docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" mysql',
+							returnStdout: true
+						)
+					}
+				}
 		
 				sh "mvn clean verify -DENV_TEST_MYSQL_HOST=${dockerMysqlIP}"
 		
