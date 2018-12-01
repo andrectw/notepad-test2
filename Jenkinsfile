@@ -33,13 +33,11 @@ pipeline {
 		
             steps {
 				
-				step {
-					script {
-						dockerMysqlIP = sh (
-							script: 'docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" mysql',
-							returnStdout: true
-						)
-					}
+				script {
+					dockerMysqlIP = sh (
+						script: 'docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" mysql',
+						returnStdout: true
+					)
 				}
 		
 				sh "mvn clean verify -DENV_TEST_MYSQL_HOST=${dockerMysqlIP}"
