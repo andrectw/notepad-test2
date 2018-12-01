@@ -32,6 +32,8 @@ pipeline {
 		stage("Test") {
 		
             steps {
+			
+				sh "docker container run -d --name mysql -e MYSQL_DATABASE=notepad -e MYSQL_ROOT_PASSWORD=root -p 3306:3306 mysql:5.7"
 				
 				script {
 					dockerMysqlIP = sh (
