@@ -8,6 +8,8 @@ pipeline {
     maven 'M3'
   }
   
+  def dockerMysqlIP
+  
   stages {
 		stage ('Docker') {
 		  steps {
@@ -28,9 +30,13 @@ pipeline {
         }		
 		stage("Test") {
             steps {
-				 sh "docker container run -d --name mysql -e MYSQL_DATABASE=notepad -e MYSQL_ROOT_PASSWORD=root -p 3306:3306 mysql:5.7"
+				
+				dockerMysqlIP = sh (
+					script: 'docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" mysql',
+					returnStdout: true
+				)
 		
-				sh "mvn clean verify"
+				sh "mvn clean verify -DENV_TEST_MYSQL_HOST=${dockerMysqlIP}"
 		
 				sh "docker stop mysql && docker rm mysql"
             }
